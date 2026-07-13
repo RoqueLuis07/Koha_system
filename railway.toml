@@ -1,0 +1,17 @@
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile"
+
+[deploy]
+startCommand = "/usr/local/bin/entrypoint.sh"
+healthcheckPath = "/cgi-bin/koha/mainpage.pl"
+healthcheckTimeout = 300
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 3
+
+# This file configures the default (staff/intranet) service.
+# Create a second Railway service from the same repo/Dockerfile for the
+# OPAC, and override its SERVICE variable to "opac". See
+# docs/RAILWAY_DEPLOY.md for the full setup.
+[env]
+SERVICE = "intranet"

@@ -1,0 +1,193 @@
+
+<yazgfs>
+<!-- Zebra is not used in this deployment (Elasticsearch is the search engine),
+     these listen/server blocks are inert but kept so the XML stays valid if
+     zebrasrv is ever invoked manually. -->
+<listen id="biblioserver" >unix:/var/lock/koha/koha/zebradb/bibliosocket</listen>
+<listen id="authorityserver" >unix:/var/lock/koha/koha/zebradb/authoritysocket</listen>
+
+<server id="biblioserver"  listenref="biblioserver">
+    <directory>/var/lib/koha/koha/biblios</directory>
+    <config>/etc/koha/zebradb/biblios/zebra-biblios-dom.cfg</config>
+    <cql2rpn>/etc/koha/zebradb/pqf.properties</cql2rpn>
+</server>
+<serverinfo id="biblioserver">
+        <ccl2rpn>/etc/koha/zebradb/ccl.properties</ccl2rpn>
+        <user>kohauser</user>
+        <password>zebrastripes</password>
+</serverinfo>
+
+<server id="authorityserver"  listenref="authorityserver" >
+    <directory>/var/lib/koha/koha/authorities</directory>
+    <config>/etc/koha/zebradb/authorities/zebra-authorities-dom.cfg</config>
+    <cql2rpn>/etc/koha/zebradb/pqf.properties</cql2rpn>
+</server>
+<serverinfo id="authorityserver">
+    <ccl2rpn>/etc/koha/zebradb/ccl.properties</ccl2rpn>
+    <user>kohauser</user>
+    <password>zebrastripes</password>
+</serverinfo>
+
+<config>
+ <db_scheme>${DB_TYPE}</db_scheme>
+ <database>${DB_NAME}</database>
+ <hostname>${DB_HOST}</hostname>
+ <port>${DB_PORT}</port>
+ <user>${DB_USER}</user>
+ <pass>${DB_PASS}</pass>
+ <tls>${DB_USE_TLS}</tls>
+ <ca></ca>
+ <cert></cert>
+ <key></key>
+ <biblioserver>biblios</biblioserver>
+ <biblioservershadow>1</biblioservershadow>
+ <authorityserver>authorities</authorityserver>
+ <authorityservershadow>1</authorityservershadow>
+ <pluginsdir>/var/lib/koha/koha/plugins</pluginsdir>
+ <enable_plugins>${ENABLE_PLUGINS}</enable_plugins>
+ <upload_path>/var/lib/koha/koha/uploads</upload_path>
+ <tmp_path>/var/lib/koha/koha/tmp</tmp_path>
+ <intranetdir>/app</intranetdir>
+ <opacdir>/app/opac</opacdir>
+ <opachtdocs>/app/koha-tmpl/opac-tmpl</opachtdocs>
+ <intrahtdocs>/app/koha-tmpl/intranet-tmpl</intrahtdocs>
+ <includes>/app/koha-tmpl/intranet-tmpl/prog/en/includes/</includes>
+ <logdir>/var/log/koha/koha</logdir>
+ <docdir>/app/docs</docdir>
+ <backupdir>/var/spool/koha/koha</backupdir>
+ <mana_config>https://mana-kb.koha-community.org</mana_config>
+ <backup_db_via_tools>0</backup_db_via_tools>
+ <backup_conf_via_tools>0</backup_conf_via_tools>
+ <install_log>/var/log/koha/koha/koha-install-log</install_log>
+ <useldapserver>0</useldapserver>
+ <useshibboleth>0</useshibboleth>
+ <zebra_lockdir>/var/lock/koha/koha/zebradb</zebra_lockdir>
+ <lockdir>/var/lock/koha/koha</lockdir>
+ <use_zebra_facets>0</use_zebra_facets>
+ <zebra_max_record_size>1024</zebra_max_record_size>
+ <zebra_connection_timeout>30</zebra_connection_timeout>
+ <log4perl_conf>/etc/koha/log4perl.conf</log4perl_conf>
+ <memcached_servers>${MEMCACHED_SERVERS}</memcached_servers>
+ <memcached_namespace>${MEMCACHED_NAMESPACE}</memcached_namespace>
+ <template_cache_dir>/var/cache/koha/koha/templates</template_cache_dir>
+
+ <api_secret_passphrase>${API_SECRET_PASSPHRASE}</api_secret_passphrase>
+
+ <ttf>
+    <font type="TR" >/usr/share/fonts/truetype/dejavu/DejaVuSerif.ttf</font>
+    <font type="TB" >/usr/share/fonts/truetype/dejavu/DejaVuSerif-Bold.ttf</font>
+    <font type="TI" >/usr/share/fonts/truetype/dejavu/DejaVuSerif-Italic.ttf</font>
+    <font type="TBI">/usr/share/fonts/truetype/dejavu/DejaVuSerif-BoldItalic.ttf</font>
+    <font type="C"  >/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf</font>
+    <font type="CB" >/usr/share/fonts/truetype/dejavu/DejaVuSansMono-Bold.ttf</font>
+    <font type="CO" >/usr/share/fonts/truetype/dejavu/DejaVuSansMono-Oblique.ttf</font>
+    <font type="CBO">/usr/share/fonts/truetype/dejavu/DejaVuSansMono-BoldOblique.ttf</font>
+    <font type="H"  >/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf</font>
+    <font type="HO" >/usr/share/fonts/truetype/dejavu/DejaVuSans-Oblique.ttf</font>
+    <font type="HB" >/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf</font>
+    <font type="HBO">/usr/share/fonts/truetype/dejavu/DejaVuSans-BoldOblique.ttf</font>
+ </ttf>
+
+ <sms_send_config>/etc/koha/sms_send/</sms_send_config>
+
+ <plack_max_requests>50</plack_max_requests>
+ <plack_workers>${PLACK_WORKERS}</plack_workers>
+
+ <duplicate_running_reports_per_user_limit>0</duplicate_running_reports_per_user_limit>
+ <total_running_reports_per_user_limit>0</total_running_reports_per_user_limit>
+
+ <koha_trusted_proxies>0.0.0.0/0</koha_trusted_proxies>
+ <reverse_proxy_ip_header>HTTP_X_FORWARDED_FOR</reverse_proxy_ip_header>
+ <enable_trusted_proxy_for_headers>1</enable_trusted_proxy_for_headers>
+
+ <elasticsearch>
+     <server>${ELASTICSEARCH_SERVERS}</server>
+     <index_name>${ELASTICSEARCH_INDEX}</index_name>
+     <cxn_pool>Static</cxn_pool>
+ </elasticsearch>
+ <es_indexer_batch_size>10</es_indexer_batch_size>
+
+ <interlibrary_loans>
+     <backend_directory>/app/Koha/Illbackends</backend_directory>
+     <branch>
+         <code>CPL</code>
+         <prefix>ILL</prefix>
+     </branch>
+     <staff_request_comments>hide</staff_request_comments>
+     <reply_date>hide</reply_date>
+     <digital_recipient>branch</digital_recipient>
+ </interlibrary_loans>
+
+ <timezone>${TZ}</timezone>
+
+ <bcrypt_settings>${BCRYPT_SETTINGS}</bcrypt_settings>
+ <encryption_key>${ENCRYPTION_KEY}</encryption_key>
+
+ <git_install>1</git_install>
+ <debug_mode>0</debug_mode>
+ <strict_sql_modes>0</strict_sql_modes>
+
+ <plugins_restricted>1</plugins_restricted>
+ <plugins_restart>1</plugins_restart>
+ <plugin_repos>
+    <repo>
+        <name>ByWater Solutions</name>
+        <org_name>bywatersolutions</org_name>
+        <service>github</service>
+    </repo>
+    <repo>
+        <name>Theke Solutions</name>
+        <org_name>thekesolutions</org_name>
+        <service>github</service>
+    </repo>
+    <repo>
+        <name>Open Fifth</name>
+        <org_name>openfifth</org_name>
+        <service>github</service>
+    </repo>
+ </plugin_repos>
+
+ <koha_xslt_security>
+ </koha_xslt_security>
+
+ <smtp_server>
+    <host>${SMTP_HOST}</host>
+    <port>${SMTP_PORT}</port>
+    <timeout>${SMTP_TIMEOUT}</timeout>
+    <ssl_mode>${SMTP_SSL_MODE}</ssl_mode>
+    <user_name>${SMTP_USER_NAME}</user_name>
+    <password>${SMTP_PASSWORD}</password>
+    <debug>${SMTP_DEBUG}</debug>
+ </smtp_server>
+
+ <message_broker>
+   <hostname>localhost</hostname>
+   <port>61613</port>
+   <username>guest</username>
+   <password>guest</password>
+   <vhost></vhost>
+ </message_broker>
+
+ <background_jobs_worker>
+     <max_processes>1</max_processes>
+ </background_jobs_worker>
+
+ <mfa_range>1</mfa_range>
+
+ <auto_renew_cronjob>
+   <parallel_loops_count>1</parallel_loops_count>
+ </auto_renew_cronjob>
+
+ <content_security_policy>
+   <opac>
+     <csp_mode></csp_mode>
+     <csp_header_value></csp_header_value>
+   </opac>
+   <intranet>
+     <csp_mode></csp_mode>
+     <csp_header_value></csp_header_value>
+   </intranet>
+ </content_security_policy>
+
+</config>
+</yazgfs>
