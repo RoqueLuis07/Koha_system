@@ -1,0 +1,96 @@
+<template>
+    <div v-if="initialized && config.settings.enabled == 1">
+        <div id="sub-header">
+            <Breadcrumbs />
+            <Help />
+        </div>
+        <div class="main container-fluid">
+            <div class="row">
+                <div class="col-md-10 order-md-2 order-sm-1">
+                    <main>
+                        <Dialog />
+                        <router-view />
+                    </main>
+                </div>
+
+                <div class="col-md-2 order-sm-2 order-md-1">
+                    <LeftMenu :title="$__('Preservation')"></LeftMenu>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="main container-fluid" v-else>
+        <Dialog />
+    </div>
+</template>
+
+<script>
+import { inject, onBeforeMount, ref } from "vue";
+import Breadcrumbs from "../Breadcrumbs.vue";
+import Help from "../Help.vue";
+import LeftMenu from "../LeftMenu.vue";
+import Dialog from "../Dialog.vue";
+import { APIClient } from "../../fetch/api-client.js";
+import "vue-select/dist/vue-select.css";
+import { storeToRefs } from "pinia";
+import { $__ } from "@koha-vue/i18n";
+
+export default {
+    setup() {
+        const mainStore = inject("mainStore");
+
+        const { loading, loaded, setError } = mainStore;
+
+        const PreservationStore = inject("PreservationStore");
+
+        const { config, authorisedValues } = storeToRefs(PreservationStore);
+        const { loadAuthorisedValues } = PreservationStore;
+
+        const initialized = ref(false);
+
+        onBeforeMount(() => {
+            loading();
+
+            const client = APIClient.preservation;
+            client.config.get().then(result => {
+                config.value = result;
+                if (config.value.settings.enabled != 1) {
+                    loaded();
+                    return setError(
+                        $__(
+                            'The preservation module is disabled, turn on <a href="/cgi-bin/koha/admin/preferences.pl?tab=&op=search&searchfield=PreservationModule">PreservationModule</a> to use it'
+                        ),
+                        false
+                    );
+                }
+                loadAuthorisedValues(
+                    authorisedValues.value,
+                    PreservationStore
+                ).then(() => {
+                    loaded();
+                    initialized.value = true;
+                });
+            });
+        });
+
+        return {
+            loading,
+            loaded,
+            config,
+            setError,
+            authorisedValues,
+            loadAuthorisedValues,
+            PreservationStore,
+            initialized,
+        };
+    },
+    components: {
+        Breadcrumbs,
+        Dialog,
+        Help,
+        LeftMenu,
+    },
+};
+</script>
+
+<style></style>
