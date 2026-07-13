@@ -1,7 +1,6 @@
 .git
 node_modules
 *.log
-t
 xt
 debian
 .github
