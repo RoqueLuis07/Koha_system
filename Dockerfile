@@ -28,6 +28,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         default-libmysqlclient-dev \
         default-mysql-client \
         libmariadb-dev-compat \
+        libdbd-mysql-perl \
         libxml2-dev \
         libxslt1-dev \
         libssl-dev \
